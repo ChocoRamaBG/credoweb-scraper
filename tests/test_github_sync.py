@@ -1,6 +1,7 @@
 """Offline integration checks for durable state and the downstream CSV branch."""
 import csv
 import gzip
+import io
 import json
 import sqlite3
 import subprocess
@@ -31,6 +32,16 @@ def create_database(path):
     """)
     database.commit()
     return database
+
+
+class GitHubRequestTests(unittest.TestCase):
+    def test_repository_access_check_uses_canonical_endpoint(self):
+        # GitHub returns 404 for /repos/OWNER/REPO/ even with a valid token.
+        with patch.dict("os.environ", {"GH_TOKEN": "test-token"}), \
+                patch("scripts.github_sync.urlopen", return_value=io.BytesIO(b'{"full_name":"owner/repo"}')) as request:
+            client = github_sync.GitHub("owner/repo")
+            self.assertEqual(client.api("")["full_name"], "owner/repo")
+        self.assertEqual(request.call_args.args[0].full_url, "https://api.github.com/repos/owner/repo")
 
 
 class BundleValidationTests(unittest.TestCase):

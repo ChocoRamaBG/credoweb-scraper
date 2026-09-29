@@ -165,7 +165,10 @@ class GitHub:
         if data is not None:
             payload = json.dumps(data).encode("utf-8")
             headers["Content-Type"] = "application/json"
-        request = Request(f"{self.base}/repos/{self.repository}/{path}", data=payload, headers=headers, method=method)
+        url = f"{self.base}/repos/{self.repository}"
+        if path:
+            url += "/" + path.lstrip("/")
+        request = Request(url, data=payload, headers=headers, method=method)
         try:
             with urlopen(request, timeout=120) as response:
                 body = response.read()
