@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "snapshot_at": "2026-09-29T12:30:35+00:00",
+  "database": "checkpoint.sqlite3",
+  "counts": {
+    "profiles": 25552,
+    "workplaces": 15559,
+    "contacts": 7522,
+    "specialties": 28848
+  },
+  "record_status_counts": {
+    "complete": 1694,
+    "partial": 9,
+    "listed": 22496,
+    "in_progress": 1353
+  },
+  "partial_snapshot": true,
+  "encoding": "UTF-8 BOM",
+  "delimiter": ",",
+  "source": "CredoWeb public directory",
+  "publication_status": "complete",
+  "collection_status": "partial",
+  "files": {
+    "profiles": {
+      "filename": "profiles.csv",
+      "rows": 25552,
+      "columns": 30,
+      "sha256": "a5d8ed014cb87729ad433871d2b6d342a91943b827dcc59a885f198e911cdb4e",
+      "bytes": 10798309
+    },
+    "workplaces": {
+      "filename": "workplaces.csv",
+      "rows": 15559,
+      "columns": 20,
+      "sha256": "5602d258e980d4a9f96126ed7fdc3dbb144ab17dc70c0cfe8f016b80016111dc",
+      "bytes": 4518725
+    },
+    "contacts": {
+      "filename": "contacts.csv",
+      "rows": 7522,
+      "columns": 9,
+      "sha256": "825663bce1295098925dd547fa42750ccd7c2cf5ae8c67597f54c604b032ce7c",
+      "bytes": 1240254
+    },
+    "specialties": {
+      "filename": "specialties.csv",
+      "rows": 28848,
+      "columns": 4,
+      "sha256": "d9e0f45058b1387c511af7b130567a1fcaefa96d1dfc1c4f861bbbb116cb0420",
+      "bytes": 1529287
+    }
+  },
+  "support_files": {
+    "schema.json": {
+      "filename": "schema.json",
+      "sha256": "4159984f3680e695649c58c7ab8c79ebbe327a5a7a78183ecac933abc9d3c69f",
+      "bytes": 7224
+    },
+    "README.md": {
+      "filename": "README.md",
+      "sha256": "825693bbf7f8681b864b8d04d786416c0d65fcb4c2550b092973372b6017321e",
+      "bytes": 5134
+    }
+  }
+}

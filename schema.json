@@ -1,0 +1,354 @@
+{
+  "schema_version": "1.0",
+  "null_value": "",
+  "encoding": "UTF-8 BOM",
+  "delimiter": ",",
+  "tables": {
+    "profiles": {
+      "columns": [
+        "source",
+        "profile_id",
+        "entity_key",
+        "category_id",
+        "category",
+        "profile_type_id",
+        "profile_type",
+        "name",
+        "name_normalized",
+        "main_specialty",
+        "profile_city_id",
+        "profile_city",
+        "profile_country_id",
+        "profile_country",
+        "phone",
+        "phone_country_code",
+        "email",
+        "website",
+        "full_address",
+        "street_address",
+        "address_city",
+        "postal_code",
+        "address_country",
+        "workplace_count",
+        "phone_count",
+        "email_count",
+        "address_count",
+        "source_url",
+        "record_status",
+        "detail_fetched_at"
+      ],
+      "primary_key": [
+        "profile_id"
+      ],
+      "fields": {
+        "source": {
+          "type": "text"
+        },
+        "profile_id": {
+          "type": "text"
+        },
+        "entity_key": {
+          "type": "text"
+        },
+        "category_id": {
+          "type": "text"
+        },
+        "category": {
+          "type": "text"
+        },
+        "profile_type_id": {
+          "type": "text"
+        },
+        "profile_type": {
+          "type": "text"
+        },
+        "name": {
+          "type": "text"
+        },
+        "name_normalized": {
+          "type": "text"
+        },
+        "main_specialty": {
+          "type": "text"
+        },
+        "profile_city_id": {
+          "type": "text"
+        },
+        "profile_city": {
+          "type": "text"
+        },
+        "profile_country_id": {
+          "type": "text"
+        },
+        "profile_country": {
+          "type": "text"
+        },
+        "phone": {
+          "type": "text"
+        },
+        "phone_country_code": {
+          "type": "text"
+        },
+        "email": {
+          "type": "text"
+        },
+        "website": {
+          "type": "text"
+        },
+        "full_address": {
+          "type": "text"
+        },
+        "street_address": {
+          "type": "text"
+        },
+        "address_city": {
+          "type": "text"
+        },
+        "postal_code": {
+          "type": "text"
+        },
+        "address_country": {
+          "type": "text"
+        },
+        "workplace_count": {
+          "type": "integer"
+        },
+        "phone_count": {
+          "type": "integer"
+        },
+        "email_count": {
+          "type": "integer"
+        },
+        "address_count": {
+          "type": "integer"
+        },
+        "source_url": {
+          "type": "text"
+        },
+        "record_status": {
+          "type": "text"
+        },
+        "detail_fetched_at": {
+          "type": "text"
+        }
+      }
+    },
+    "workplaces": {
+      "columns": [
+        "profile_id",
+        "workplace_key",
+        "facility_profile_id",
+        "practice_id",
+        "facility_name",
+        "position",
+        "street_address",
+        "city_id",
+        "city",
+        "postal_code",
+        "country_id",
+        "country",
+        "full_address",
+        "is_current",
+        "is_practice",
+        "start_year",
+        "start_month",
+        "end_year",
+        "end_month",
+        "source_path"
+      ],
+      "primary_key": [
+        "workplace_key"
+      ],
+      "fields": {
+        "profile_id": {
+          "type": "text"
+        },
+        "workplace_key": {
+          "type": "text"
+        },
+        "facility_profile_id": {
+          "type": "text"
+        },
+        "practice_id": {
+          "type": "text"
+        },
+        "facility_name": {
+          "type": "text"
+        },
+        "position": {
+          "type": "text"
+        },
+        "street_address": {
+          "type": "text"
+        },
+        "city_id": {
+          "type": "text"
+        },
+        "city": {
+          "type": "text"
+        },
+        "postal_code": {
+          "type": "text"
+        },
+        "country_id": {
+          "type": "text"
+        },
+        "country": {
+          "type": "text"
+        },
+        "full_address": {
+          "type": "text"
+        },
+        "is_current": {
+          "type": "text",
+          "allowed_values": [
+            "true",
+            "false",
+            ""
+          ]
+        },
+        "is_practice": {
+          "type": "text",
+          "allowed_values": [
+            "true",
+            "false",
+            ""
+          ]
+        },
+        "start_year": {
+          "type": "text"
+        },
+        "start_month": {
+          "type": "text"
+        },
+        "end_year": {
+          "type": "text"
+        },
+        "end_month": {
+          "type": "text"
+        },
+        "source_path": {
+          "type": "text"
+        }
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "profile_id"
+          ],
+          "references": "profiles.profile_id"
+        }
+      ]
+    },
+    "contacts": {
+      "columns": [
+        "profile_id",
+        "contact_id",
+        "workplace_key",
+        "contact_type",
+        "contact_value",
+        "contact_normalized",
+        "phone_country_code",
+        "is_primary",
+        "source_path"
+      ],
+      "primary_key": [
+        "contact_id"
+      ],
+      "fields": {
+        "profile_id": {
+          "type": "text"
+        },
+        "contact_id": {
+          "type": "text"
+        },
+        "workplace_key": {
+          "type": "text"
+        },
+        "contact_type": {
+          "type": "text",
+          "allowed_values": [
+            "phone",
+            "email",
+            "website"
+          ]
+        },
+        "contact_value": {
+          "type": "text"
+        },
+        "contact_normalized": {
+          "type": "text"
+        },
+        "phone_country_code": {
+          "type": "text"
+        },
+        "is_primary": {
+          "type": "text",
+          "allowed_values": [
+            "true",
+            "false",
+            ""
+          ]
+        },
+        "source_path": {
+          "type": "text"
+        }
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "profile_id"
+          ],
+          "references": "profiles.profile_id"
+        },
+        {
+          "columns": [
+            "workplace_key"
+          ],
+          "references": "workplaces.workplace_key",
+          "nullable": true
+        }
+      ]
+    },
+    "specialties": {
+      "columns": [
+        "profile_id",
+        "specialty_kind",
+        "specialty_id",
+        "specialty_name"
+      ],
+      "primary_key": [
+        "profile_id",
+        "specialty_kind",
+        "specialty_id",
+        "specialty_name"
+      ],
+      "fields": {
+        "profile_id": {
+          "type": "text"
+        },
+        "specialty_kind": {
+          "type": "text",
+          "allowed_values": [
+            "main",
+            "other"
+          ]
+        },
+        "specialty_id": {
+          "type": "text"
+        },
+        "specialty_name": {
+          "type": "text"
+        }
+      },
+      "foreign_keys": [
+        {
+          "columns": [
+            "profile_id"
+          ],
+          "references": "profiles.profile_id"
+        }
+      ]
+    }
+  }
+}
