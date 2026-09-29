@@ -1,0 +1,82 @@
+name: Weekly CredoWeb refresh
+
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      runtime_seconds:
+        description: 'Collection budget in seconds (60–14400)'
+        default: '14400'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: credoweb-database
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.13'
+      - name: Run offline tests
+        run: python -m unittest discover -s tests -v
+      - name: Restore persistent database
+        id: restore
+        run: python scripts/github_sync.py restore
+      - name: Refresh listings and enrich profile details
+        id: collect
+        env:
+          RUNTIME_SECONDS: ${{ inputs.runtime_seconds || '14400' }}
+        run: |
+          python - <<'PY'
+          import os
+          import subprocess
+          import sys
+          runtime = int(os.environ['RUNTIME_SECONDS'])
+          if not 60 <= runtime <= 14400:
+              raise SystemExit('runtime_seconds must be between 60 and 14400')
+          result = subprocess.run([
+              sys.executable, 'credoweb_scraper.py', '--output', 'output',
+              '--refresh-days', '6', '--max-runtime-seconds', str(runtime),
+              '--discovery-budget-seconds', str(min(1800, max(15, runtime // 4))),
+              '--delay', '1.5', '--recovery-requests', '200', '--quick-export',
+              '--export-interval', '300',
+          ])
+          # Partial coverage is expected while successive runs enrich the catalog.
+          if result.returncode not in (0, 2):
+              raise SystemExit(result.returncode)
+          PY
+      - name: Verify CSV publication
+        run: python scripts/github_sync.py validate
+      - name: Save next run's checkpoint
+        if: always() && steps.restore.outcome == 'success' && steps.collect.outcome != 'skipped'
+        run: python scripts/github_sync.py save
+      - name: Publish stable CSV data branch
+        run: python scripts/github_sync.py publish
+      - name: Collection summary
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          manifest = json.loads(Path('output/merge/manifest.json').read_text())
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write('CSV database published to the **data** branch.\n\n')
+              summary.write(f"Snapshot: {manifest['snapshot_at']}\n\n")
+              for table, count in manifest['counts'].items():
+                  summary.write(f'- {table}: {count:,} rows\n')
+              summary.write(f"\nDetail coverage: {manifest['record_status_counts']}\n")
+          PY
