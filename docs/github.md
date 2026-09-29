@@ -1,6 +1,7 @@
 # Weekly collection and CSV integration
 
-The source code lives on the default branch. The `data` branch contains the latest
+The source code lives in [ChocoRamaBG/credoweb-scraper](https://github.com/ChocoRamaBG/credoweb-scraper).
+The [data branch](https://github.com/ChocoRamaBG/credoweb-scraper/tree/data) contains the latest
 published CSV snapshot at fixed paths:
 
 | File | Contents | Join key |
@@ -25,7 +26,8 @@ refresh is incomplete; that timestamp does not mean every field was refreshed.
 
 `Weekly CredoWeb refresh` runs every Monday at **03:17 UTC** (06:17 during Bulgarian
 summer time, 05:17 during winter time). It can also be started from the repository's
-**Actions** page using **Run workflow**.
+[Actions page](https://github.com/ChocoRamaBG/credoweb-scraper/actions/workflows/weekly-refresh.yml)
+using **Run workflow**.
 
 Each run restores the previous SQLite checkpoint, discovers profiles, refreshes
 older information and continues detail collection. Known profiles are retained
@@ -56,13 +58,13 @@ time. The repository must keep Actions enabled. See GitHub's
 
 Check out the `data` branch into a separate directory. This gives all CSV files
 from the same commit, avoiding a mixture of snapshots during a concurrent update.
-Replace `OWNER/REPO` with this scraper's repository:
+Use this scraper's repository as the source:
 
 ```yaml
 - name: Load CredoWeb CSV snapshot
   uses: actions/checkout@v7
   with:
-    repository: OWNER/REPO
+    repository: ChocoRamaBG/credoweb-scraper
     ref: data
     path: credoweb-data
     token: ${{ secrets.CREDOWEB_READ_TOKEN }}
