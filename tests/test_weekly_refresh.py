@@ -159,6 +159,7 @@ class WeeklyRunTests(unittest.TestCase):
             patch("credoweb_scraper.logging.FileHandler", return_value=logging.NullHandler()),
             patch("credoweb_scraper.time.monotonic", side_effect=lambda: self.clock[0]),
             patch("credoweb_export.export_records", side_effect=lambda records, *args, **kwargs: {"rows": len(list(records))}),
+            patch("credoweb_full.seal_full_exports"),
         ):
             context.start()
             self.addCleanup(context.stop)

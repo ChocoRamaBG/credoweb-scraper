@@ -525,6 +525,10 @@ def main(argv=None):
 
     def publish(*, full=False, required=False):
         nonlocal last_export
+        from credoweb_full import SEAL_FILENAME, seal_full_exports
+        # A failed export must not leave an old seal reusable when the normalized
+        # fields happened to stay identical (for example, only biography changed).
+        (output / SEAL_FILENAME).unlink(missing_ok=True)
         update_counts()
         save_json(output / "manifest.json", manifest)
         failures = []
@@ -548,6 +552,12 @@ def main(argv=None):
             failures.append(("Report", exc))
         else:
             manifest["report_export_status"] = "complete"
+        if not failures:
+            # Bind both exports before collection can advance to another record.
+            try:
+                seal_full_exports(output, output / "merge")
+            except OSError as exc:
+                failures.append(("Export snapshot seal", exc))
         last_export = time.monotonic()
         if failures:
             manifest["export_status"] = "failed"

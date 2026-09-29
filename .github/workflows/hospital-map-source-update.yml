@@ -1,0 +1,50 @@
+# Generated locally by integrations/github-source-events/generate_workflow.py.
+# Install this file as .github/workflows/hospital-map-source-update.yml on master.
+name: Update hospital map from changed source files
+
+on:
+  # Scraper commits made with GITHUB_TOKEN do not trigger on:push.
+  # The local bridge checks configured source content before requesting a build.
+  workflow_run:
+    workflows:
+      - "Weekly CredoWeb refresh"
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hospital-map-source-refresh
+  cancel-in-progress: false
+
+jobs:
+  update-local-website:
+    if: >-
+      github.repository == 'ChocoRamaBG/credoweb-scraper' &&
+      ((github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') ||
+       (github.event_name == 'workflow_run' &&
+        github.event.workflow_run.head_branch == 'master' &&
+        github.event.workflow_run.head_repository.full_name == 'ChocoRamaBG/credoweb-scraper' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event != 'pull_request' &&
+        github.event.workflow_run.event != 'pull_request_target'))
+    runs-on: [self-hosted, Windows, X64, hospital-map-sources]
+    steps:
+      - name: Refresh changed source data using the installed local pipeline
+        env:
+          GH_SOURCE_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ([string]::IsNullOrWhiteSpace($env:HOSPITAL_MAP_ROOT)) {
+            throw 'Set HOSPITAL_MAP_ROOT in the local runner environment before starting the runner.'
+          }
+          $root = (Resolve-Path -LiteralPath $env:HOSPITAL_MAP_ROOT).Path
+          $bridge = Join-Path $root 'integrations\github-source-events\Invoke-GitHubSourceRefresh.ps1'
+          if (-not (Test-Path -LiteralPath $bridge -PathType Leaf)) {
+            throw 'The local GitHub source event bridge is missing.'
+          }
+          & $bridge -Root $root
+          if ($LASTEXITCODE -ne 0) { throw 'The local website source refresh failed.' }

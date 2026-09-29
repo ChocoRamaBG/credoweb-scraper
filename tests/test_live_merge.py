@@ -143,6 +143,11 @@ class LiveMergeCLITests(unittest.TestCase):
         self.log_patch = patch("credoweb_scraper.logging.FileHandler", return_value=logging.NullHandler())
         self.log_patch.start()
         self.addCleanup(self.log_patch.stop)
+        # The report writer is mocked in this group; real paired exports are
+        # covered by test_full_exports.
+        seal = patch("credoweb_full.seal_full_exports")
+        seal.start()
+        self.addCleanup(seal.stop)
 
     @staticmethod
     def discover(client, categories, **kwargs):

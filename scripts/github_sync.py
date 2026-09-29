@@ -17,6 +17,7 @@ import re
 import shutil
 import sqlite3
 import subprocess
+import sys
 import tempfile
 import uuid
 from contextlib import closing
@@ -25,8 +26,13 @@ from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
+# Direct invocation (python scripts/github_sync.py) also needs repository modules.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from credoweb_full import FULL_FILES, prepare_full_bundle, validate_full_bundle
+
 TABLES = ("profiles", "workplaces", "contacts", "specialties")
-BUNDLE_FILES = tuple(table + ".csv" for table in TABLES) + ("schema.json", "README.md", "manifest.json")
+NORMALIZED_FILES = tuple(table + ".csv" for table in TABLES) + ("schema.json", "README.md", "manifest.json")
+BUNDLE_FILES = NORMALIZED_FILES + FULL_FILES
 ASSET_PATTERN = re.compile(r"^checkpoint-[A-Za-z0-9-]+\.sqlite3\.gz$")
 MAX_ASSET_BYTES = 2 * 1024 ** 3
 
@@ -49,7 +55,7 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def validate_bundle(folder: Path) -> dict:
+def validate_bundle(folder: Path, *, require_full: bool = False) -> dict:
     """Reject incomplete publication, changed files, malformed rows and broken joins."""
     manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
     if manifest.get("publication_status") != "complete":
@@ -94,6 +100,8 @@ def validate_bundle(folder: Path) -> dict:
         path = folder / filename
         if entry["filename"] != filename or path.stat().st_size != entry["bytes"] or sha256(path) != entry["sha256"]:
             raise ValueError(f"Support file hash/size mismatch: {filename}")
+    if require_full:
+        validate_full_bundle(folder)
     return manifest
 
 
@@ -278,6 +286,7 @@ def validate_collection(folder: Path, database: Path, repository: Path) -> dict:
     current = profile_ids((folder / "profiles.csv").read_text(encoding="utf-8-sig"))
     if current != database_profile_ids(database):
         raise ValueError("CSV profile IDs do not match the saved collector database")
+    validate_full_bundle(folder)
     _, previous = remote_data_state(repository)
     assert_no_profile_loss(current, previous)
     return manifest
@@ -288,11 +297,14 @@ def publish_data(folder: Path, repository: Path, remote: str = "origin") -> str:
     with tempfile.TemporaryDirectory(prefix="credoweb-publish-") as temporary:
         staging = Path(temporary)
         first_manifest = (folder / "manifest.json").read_bytes()
+        first_full_manifest = (folder / "full" / "manifest.json").read_bytes()
         for filename in BUNDLE_FILES:
+            (staging / filename).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(folder / filename, staging / filename)
-        if (folder / "manifest.json").read_bytes() != first_manifest:
+        if ((folder / "manifest.json").read_bytes() != first_manifest
+                or (folder / "full" / "manifest.json").read_bytes() != first_full_manifest):
             raise ValueError("CSV snapshot changed during staging; retry publication")
-        manifest = validate_bundle(staging)
+        manifest = validate_bundle(staging, require_full=True)
         parent, previous_ids = remote_data_state(repository, remote)
         current = (staging / "profiles.csv").read_text(encoding="utf-8-sig")
         assert_no_profile_loss(profile_ids(current), previous_ids)
@@ -323,7 +335,7 @@ def publish_data(folder: Path, repository: Path, remote: str = "origin") -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("restore", "save", "publish", "validate", "snapshot"))
+    parser.add_argument("command", choices=("restore", "save", "publish", "validate", "prepare", "snapshot"))
     parser.add_argument("--repository", "--repo", default=os.environ.get("GITHUB_REPOSITORY", ""), help="GitHub OWNER/NAME")
     parser.add_argument("--output", type=Path, default=Path("output"), help="Collector output directory")
     parser.add_argument("--database", type=Path, help="Override OUTPUT/checkpoint.sqlite3")
@@ -337,10 +349,18 @@ def main(argv: list[str] | None = None) -> int:
         restore_state(GitHub(args.repository), args.database)
     elif args.command == "save":
         save_state(GitHub(args.repository), args.database, args.source_dir)
-    elif args.command == "publish":
-        publish_data(args.csv_dir, args.source_dir)
-    elif args.command == "validate":
-        print(json.dumps(validate_collection(args.csv_dir, args.database, args.source_dir)["counts"]))
+    elif args.command in {"publish", "validate", "prepare"}:
+        # Validate the normalized files before binding a detailed export to them.
+        # Any old full bundle can legitimately belong to the previous snapshot;
+        # preparation validates its replacement before publication.
+        validate_bundle(args.csv_dir)
+        prepare_full_bundle(args.output, args.csv_dir)
+        if args.command == "publish":
+            publish_data(args.csv_dir, args.source_dir)
+        elif args.command == "validate":
+            print(json.dumps(validate_collection(args.csv_dir, args.database, args.source_dir)["counts"]))
+        else:
+            print(json.dumps(validate_full_bundle(args.csv_dir)["counts"]))
     elif args.command == "snapshot":
         if not args.archive:
             parser.error("snapshot requires --archive")

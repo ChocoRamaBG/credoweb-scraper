@@ -12,6 +12,8 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from credoweb_merge import export_merge_records
+from credoweb_export import export_records
+from credoweb_full import prepare_full_bundle, seal_full_exports
 from scripts import github_sync
 
 
@@ -237,23 +239,30 @@ class GitPublicationTests(unittest.TestCase):
         github_sync.run("git", "commit", "-m", "Source", cwd=self.source)
         self.source_head = github_sync.run("git", "rev-parse", "HEAD", cwd=self.source)
 
+    def export(self, records):
+        raw = self.folder / "raw"
+        export_merge_records(records, self.bundle)
+        export_records(records, raw, include_details=False)
+        seal_full_exports(raw, self.bundle)
+        prepare_full_bundle(raw, self.bundle)
+
     def test_data_branch_contains_only_bundle_and_preserves_source_checkout(self):
-        export_merge_records([record()], self.bundle)
+        self.export([record()])
         first = github_sync.publish_data(self.bundle, self.source)
-        filenames = github_sync.run("git", "ls-tree", "--name-only", first, cwd=self.source).splitlines()
+        filenames = github_sync.run("git", "ls-tree", "-r", "--name-only", first, cwd=self.source).splitlines()
         self.assertEqual(set(filenames), set(github_sync.BUNDLE_FILES))
         self.assertEqual(github_sync.run("git", "rev-parse", "HEAD", cwd=self.source), self.source_head)
         self.assertEqual(github_sync.run("git", "status", "--porcelain", cwd=self.source), "")
         self.assertEqual(github_sync.publish_data(self.bundle, self.source), first)
-        export_merge_records([record(), record(456)], self.bundle)
+        self.export([record(), record(456)])
         second = github_sync.publish_data(self.bundle, self.source)
         self.assertNotEqual(first, second)
         self.assertEqual(github_sync.run("git", "rev-parse", second + "^", cwd=self.source), first)
 
     def test_losing_existing_profile_preserves_last_published_commit(self):
-        export_merge_records([record(), record(456)], self.bundle)
+        self.export([record(), record(456)])
         previous = github_sync.publish_data(self.bundle, self.source)
-        export_merge_records([record(), record(789)], self.bundle)
+        self.export([record(), record(789)])
         with self.assertRaisesRegex(ValueError, "loses 1 existing"):
             github_sync.publish_data(self.bundle, self.source)
         remote_commit = github_sync.run("git", "ls-remote", "origin", "refs/heads/data", cwd=self.source).split()[0]

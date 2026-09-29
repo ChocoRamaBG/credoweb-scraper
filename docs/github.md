@@ -13,6 +13,9 @@ published CSV snapshot at fixed paths:
 | `schema.json` | Column definitions and types | — |
 | `manifest.json` | Snapshot time, row counts, collection status and file checksums | — |
 | `README.md` | Detailed merge and import rules | — |
+| `full/profiles.csv.gz` | Detailed Bulgarian profile export, including descriptions and source evidence | `ID` |
+| `full/workplaces.csv.gz` | Detailed workplace occurrences, retaining raw JSON and observed coordinates | `ID профил` |
+| `full/manifest.json` | Detailed CSV schema, compressed/uncompressed checksums and normalized snapshot link | — |
 
 CSV uses comma separators, UTF-8 with a BOM, and quoted fields where needed.
 Treat identifiers, phone numbers and postal codes as text. Empty values mean the
@@ -21,6 +24,11 @@ detail sections have been collected: check `record_status` and the manifest.
 `detail_fetched_at` is the latest detail collection attempt time. Partial or
 in-progress records can retain older successful contacts and addresses while a
 refresh is incomplete; that timestamp does not mean every field was refreshed.
+
+The `full/` files use the original semicolon-delimited Bulgarian CSV format,
+compressed without changing its bytes. They retain fields omitted by the
+normalized tables. See the [detailed publication contract](full-publication.md)
+before importing; both formats are published in the same immutable Git commit.
 
 ## Schedule and persistence
 
@@ -124,3 +132,18 @@ The weekly job's GitHub token can write only within this repository. It does not
 notify or run scripts in other repositories. A downstream workflow can pull the
 latest data on its own schedule; cross-repository dispatch can be added when the
 integration target is known.
+# Automatic hospital-map publication
+
+After `Weekly CredoWeb refresh` succeeds on `master`, the separate
+`hospital-map-source-update.yml` workflow notifies the configured local Windows
+runner. It executes the installed hospital-map bridge, without checking out or
+executing scraper code on that computer. The bridge compares the detailed CSV
+file contents on `data` with the last successfully published inputs. Changed
+snapshots pass through the existing matching, manual-correction and website
+publication pipeline; unchanged CSVs do not request another rebuild.
+
+The local computer must be on and signed in for that final step. The website
+continues using its existing local-network access controls. This adds no timed
+polling of GitHub. A manually edited `data` branch can be imported by running
+`Update hospital map from changed source files` from the Actions tab on `master`;
+the data-only branch deliberately does not contain executable workflows.

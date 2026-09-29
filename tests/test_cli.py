@@ -19,6 +19,10 @@ class CLITests(unittest.TestCase):
         self.logging_patch = patch("credoweb_scraper.logging.FileHandler", return_value=logging.NullHandler())
         self.logging_patch.start()
         self.addCleanup(self.logging_patch.stop)
+        # These CLI tests replace the CSV writer with an in-memory collector.
+        seal = patch("credoweb_full.seal_full_exports")
+        seal.start()
+        self.addCleanup(seal.stop)
         self.exported = []
         self.export_history = []
 
