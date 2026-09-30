@@ -72,6 +72,14 @@ verification date for cached data. The tables focus on identity, contacts,
 locations and specialties. Full descriptions and other raw fields remain in the
 scraper's full exports and saved source records.
 
+Published GitHub data snapshots also contain full/profiles.csv.gz,
+full/workplaces.csv.gz and full/manifest.json. Those are the detailed Bulgarian
+semicolon-delimited exports, including workplace JSON and observed coordinates.
+The detailed manifest links to the exact normalized manifest checksum. Read all
+files from one commit and validate both compressed and uncompressed checksums.
+The detailed publication contract is documented in docs/full-publication.md on
+the source repository's default branch.
+
 ## Reading during an update
 
 Files are staged first and each file is replaced atomically. **manifest.json is
