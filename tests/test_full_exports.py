@@ -70,6 +70,27 @@ class DetailedPublicationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "seal is missing"):
             prepare_full_bundle(self.output, self.normalized)
 
+    def test_facility_page_urls_roundtrip_with_physician_profiles_and_workplaces(self):
+        facility = record(456)
+        facility.update(category=103, url="https://www.credoweb.bg/page/456/medical-centre")
+        self.export([record(), facility])
+        manifest = prepare_full_bundle(self.output, self.normalized)
+        self.assertEqual(manifest["counts"]["profiles"], 2)
+        github_sync.validate_bundle(self.normalized, require_full=True)
+        with gzip.open(self.normalized / "full/workplaces.csv.gz", "rt", encoding="utf-8-sig", newline="") as stream:
+            source_urls = {row["Източник профил"] for row in csv.DictReader(stream, delimiter=";")}
+        self.assertIn(facility["url"], source_urls)
+
+    def test_facility_url_still_requires_matching_id_and_real_source_host(self):
+        for source_url, error in (("https://www.credoweb.bg/page/999/medical-centre", "ID/source URL mismatch"),
+                                  ("https://credoweb.bg.example/page/456/medical-centre", "invalid profile source URL"),
+                                  ("https://www.credoweb.bg/article/456/medical-centre", "invalid profile source URL")):
+            facility = record(456)
+            facility.update(category=103, url=source_url)
+            self.export([facility])
+            with self.subTest(url=source_url), self.assertRaisesRegex(ValueError, error):
+                prepare_full_bundle(self.output, self.normalized)
+
     def test_new_normalized_snapshot_with_same_ids_rejects_stale_raw_exports(self):
         newer = record()
         newer["sections"]["businessCard"]["email"] = "changed@example.bg"

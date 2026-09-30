@@ -75,7 +75,9 @@ it; its exact hashes make a previous seal unusable for a newer partial export.
 def _profile_url_id(value: str) -> str:
     try:
         parsed = urlsplit(value)
-        match = re.fullmatch(r"/profile/([0-9]+)(?:/[^/]+)?/?", parsed.path)
+        # Public facility records use /page/ID/slug, while people use
+        # /profile/ID/slug. Both are retained in the detailed source export.
+        match = re.fullmatch(r"/(?:profile|page)/([0-9]+)(?:/[^/]+)?/?", parsed.path)
         if (parsed.scheme not in {"http", "https"} or parsed.hostname not in {"credoweb.bg", "www.credoweb.bg"}
                 or parsed.username or parsed.password or parsed.port not in {None, 80, 443} or not match):
             raise ValueError("Detailed CSV has an invalid profile source URL")
