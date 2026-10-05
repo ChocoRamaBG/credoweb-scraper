@@ -1,18 +1,18 @@
 {
   "schema_version": "1.0",
-  "snapshot_at": "2026-09-30T08:20:16+00:00",
+  "snapshot_at": "2026-10-05T14:30:53+00:00",
   "database": "checkpoint.sqlite3",
   "counts": {
     "profiles": 25552,
     "workplaces": 15559,
-    "contacts": 7522,
+    "contacts": 7649,
     "specialties": 28848
   },
   "record_status_counts": {
-    "complete": 1705,
-    "partial": 10,
-    "listed": 22493,
-    "in_progress": 1344
+    "complete": 2595,
+    "partial": 21,
+    "in_progress": 894,
+    "listed": 22042
   },
   "partial_snapshot": true,
   "encoding": "UTF-8 BOM",
@@ -25,22 +25,22 @@
       "filename": "profiles.csv",
       "rows": 25552,
       "columns": 30,
-      "sha256": "8d277ded5fafaec049840ac77471707c0695443878cef5da8cf270b2436d8c5e",
-      "bytes": 10798446
+      "sha256": "199051dd55a4f34383f13e123e76f6a4be186a88b3cee0e71bf5d9da58612d1b",
+      "bytes": 10816356
     },
     "workplaces": {
       "filename": "workplaces.csv",
       "rows": 15559,
       "columns": 20,
-      "sha256": "5372970e7d9d4ee228fac9ebd7dfaa2545f1e383f776bc178208f559e3fcba71",
-      "bytes": 4518757
+      "sha256": "8b657ce4aad69479ccf0e581e458c5e2d28ffeb2cc8ae38e30087eb206b72ad7",
+      "bytes": 4520805
     },
     "contacts": {
       "filename": "contacts.csv",
-      "rows": 7522,
+      "rows": 7649,
       "columns": 9,
-      "sha256": "51ab289b463e048e42ae410976418f4a55c8e6e23b91e38825810d0014b8988b",
-      "bytes": 1240286
+      "sha256": "be23fa5090d6a292f259717c92aa214a601c43812fea138139df5fc6b3619fb3",
+      "bytes": 1255924
     },
     "specialties": {
       "filename": "specialties.csv",
