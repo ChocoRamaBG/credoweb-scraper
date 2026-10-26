@@ -3,11 +3,11 @@
   "publication_status": "complete",
   "encoding": "UTF-8 BOM",
   "delimiter": ";",
-  "snapshot_at": "2026-10-19T12:57:00+00:00",
-  "normalized_manifest_sha256": "10ba7044ae53ed7dda92bee067d2ad6552479d3f3092cbbe9b296267e6d9e73d",
+  "snapshot_at": "2026-10-26T12:59:54+00:00",
+  "normalized_manifest_sha256": "01bac3a8c5920b32c8713ec3f60c8341ccb10ca9641d1eb64beaa9f22f226ace",
   "counts": {
-    "profiles": 25570,
-    "workplaces": 17858
+    "profiles": 25585,
+    "workplaces": 18727
   },
   "files": {
     "profiles": {
@@ -37,11 +37,11 @@
         "Брой грешки",
         "Налични секции"
       ],
-      "rows": 25570,
-      "bytes": 2577951,
-      "sha256": "6a9a36e3346e46a3b75f05388a1db8a70489af6f6fdaf43b4df7b0f0142e20d0",
-      "uncompressed_bytes": 15047186,
-      "uncompressed_sha256": "80b26cf21c5ea6bb28bfb98a3e092e32611199584bc38f90089e9a42babe10a6"
+      "rows": 25585,
+      "bytes": 2752725,
+      "sha256": "43ba7c3f2ab20a8aa42b6e7a894a76746577562f210e4c5852cd2c1735e74e88",
+      "uncompressed_bytes": 15770377,
+      "uncompressed_sha256": "563dec041b4d10e2462a2128e632405c9ce3ec1b3790d4d05a48c7787baccf1f"
     },
     "workplaces": {
       "filename": "workplaces.csv.gz",
@@ -73,11 +73,11 @@
         "Източник профил",
         "JSON запис"
       ],
-      "rows": 17858,
-      "bytes": 2040660,
-      "sha256": "1edf0bed92e08049ba31d625ee5be3a2f8502d49f41dc028c05364b2d9d3f8c7",
-      "uncompressed_bytes": 24901554,
-      "uncompressed_sha256": "c66125768f3a9a9bf5a6159279b4f2fc9c9746c2d6e3ad217b6fce01969f153a"
+      "rows": 18727,
+      "bytes": 2056158,
+      "sha256": "f21d91fdc85db9c75fe0cb710997ee04c579024d6126bf070e92dde4d20f4ebf",
+      "uncompressed_bytes": 26038877,
+      "uncompressed_sha256": "bdac4a13253c02a29fad5a6adde62bd5775bcf6db55ac23d90e2c5bb3d44206d"
     }
   }
 }

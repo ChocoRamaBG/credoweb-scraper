@@ -1,18 +1,18 @@
 {
   "schema_version": "1.0",
-  "snapshot_at": "2026-10-19T12:57:00+00:00",
+  "snapshot_at": "2026-10-26T12:59:54+00:00",
   "database": "checkpoint.sqlite3",
   "counts": {
-    "profiles": 25570,
+    "profiles": 25585,
     "workplaces": 15559,
-    "contacts": 7866,
-    "specialties": 28869
+    "contacts": 8169,
+    "specialties": 28888
   },
   "record_status_counts": {
-    "complete": 3904,
-    "partial": 32,
-    "in_progress": 236,
-    "listed": 21398
+    "complete": 4589,
+    "partial": 33,
+    "in_progress": 3,
+    "listed": 20960
   },
   "partial_snapshot": true,
   "encoding": "UTF-8 BOM",
@@ -23,31 +23,31 @@
   "files": {
     "profiles": {
       "filename": "profiles.csv",
-      "rows": 25570,
+      "rows": 25585,
       "columns": 30,
-      "sha256": "09a56d6794a156282c664963ffd6cb78f04371cb988720373a31ab5e4844a3ee",
-      "bytes": 10849373
+      "sha256": "73812655e9df80a4ba6a6a13c56f8ebf1314e991eef9e2ed87eeb9c58bd7a4c1",
+      "bytes": 10872526
     },
     "workplaces": {
       "filename": "workplaces.csv",
       "rows": 15559,
       "columns": 20,
-      "sha256": "7a2559f331a9f8c3824d1e7b22a5d52c784f99e7ea44badbaeb1313882faf74f",
-      "bytes": 4523728
+      "sha256": "1e150c79941489b711d253caeba1705d7e87294be049d06d558b8e7447385abc",
+      "bytes": 4527228
     },
     "contacts": {
       "filename": "contacts.csv",
-      "rows": 7866,
+      "rows": 8169,
       "columns": 9,
-      "sha256": "5fc4cf0838ee206c32e053491d31d7055f857c79e2398d40c4890d9d442c7908",
-      "bytes": 1281652
+      "sha256": "369845c6b68b2dfeae27eef3b8e1b0845fb39696e43d636fd0cf0f9f9f4219ec",
+      "bytes": 1316835
     },
     "specialties": {
       "filename": "specialties.csv",
-      "rows": 28869,
+      "rows": 28888,
       "columns": 4,
-      "sha256": "a24dd072f7c3d4e32e3f9fd2b0569bf457006e20dbc436e9fdac82073f256a2f",
-      "bytes": 1530374
+      "sha256": "a0847a06727c966272fe7c718d5075d0c92580977871ddc494d80207651cf06d",
+      "bytes": 1531327
     }
   },
   "support_files": {
