@@ -1,18 +1,18 @@
 {
   "schema_version": "1.0",
-  "snapshot_at": "2026-11-02T15:14:38+00:00",
+  "snapshot_at": "2026-11-09T15:38:05+00:00",
   "database": "checkpoint.sqlite3",
   "counts": {
-    "profiles": 25590,
-    "workplaces": 15561,
-    "contacts": 8545,
-    "specialties": 28893
+    "profiles": 25598,
+    "workplaces": 15560,
+    "contacts": 8949,
+    "specialties": 28902
   },
   "record_status_counts": {
-    "complete": 5036,
+    "complete": 5482,
     "partial": 33,
-    "in_progress": 3,
-    "listed": 20518
+    "in_progress": 5,
+    "listed": 20078
   },
   "partial_snapshot": true,
   "encoding": "UTF-8 BOM",
@@ -23,31 +23,31 @@
   "files": {
     "profiles": {
       "filename": "profiles.csv",
-      "rows": 25590,
+      "rows": 25598,
       "columns": 30,
-      "sha256": "eb3b791220ad5cbbe85dd2924686194d36874f86c62b0bc697b7be37b827bbbd",
-      "bytes": 10892209
+      "sha256": "48e2f246c02ed3370e5621125db331d78ba98e35b84911b24973a27404812ec4",
+      "bytes": 10913674
     },
     "workplaces": {
       "filename": "workplaces.csv",
-      "rows": 15561,
+      "rows": 15560,
       "columns": 20,
-      "sha256": "12c4881e410c3c4943cc94ceb7c84839ba0097f7e1edfe72d00bb8ac3b38bc2e",
-      "bytes": 4532678
+      "sha256": "301c71cf32532826ce2662e01a0a6f6e548aadde52020459a0c16d55d9db94c6",
+      "bytes": 4536939
     },
     "contacts": {
       "filename": "contacts.csv",
-      "rows": 8545,
+      "rows": 8949,
       "columns": 9,
-      "sha256": "5301ddcacd92ac9ebec81ce0def4da607b3cb06c60bc0e5db36b421d08893908",
-      "bytes": 1360313
+      "sha256": "f1ba6733028e5135890382bd97d708817b6603a2ed528bdda99dba86418de33a",
+      "bytes": 1406447
     },
     "specialties": {
       "filename": "specialties.csv",
-      "rows": 28893,
+      "rows": 28902,
       "columns": 4,
-      "sha256": "cfa6b63be98fa8c09ac2dcd4468b8238aa9e0aa3008083c02acf72c3c8690e88",
-      "bytes": 1531581
+      "sha256": "a79ab1589c677ea2735e171cc824a415cd2baa69bdf3355ab9ac2720a12d144b",
+      "bytes": 1531985
     }
   },
   "support_files": {
